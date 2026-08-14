@@ -77,6 +77,19 @@ app.post('/api/render-video', async (req, res) => {
                 '-r 30'
             ]);
 
+
+               let command = ffmpeg()
+            .input(concatFilePath)
+            .inputOptions(['-f concat', '-safe 0'])
+            .videoCodec('libx264')
+            .outputOptions([
+                '-pix_fmt yuv420p',
+                '-preset ultrafast',
+                '-threads 1', // 🟢 تقييد استخدام الخيوط لتوفير RAM الـ Render
+                '-r 25'        // 🟢 25 إطار في الثانية كافية جداً وسريعة
+            ]);
+
+
         if (bgAudioPath) {
             command = command
                 .input(bgAudioPath)
